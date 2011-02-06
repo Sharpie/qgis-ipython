@@ -25,6 +25,11 @@ from PyQt4.QtGui import *
 import code
 import sys
 import traceback
+
+# IPython needs sys.argv to be defined
+if not hasattr(sys, 'argv'):
+    sys.argv = []
+
 import IPython.Shell
 
 from ui_console import Ui_IPython

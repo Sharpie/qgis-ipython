@@ -1,13 +1,13 @@
 #/***************************************************************************
 # ipython
-# 
+#
 # An enhanced QGIS console powered by IPython
 #                             -------------------
 #        begin                : 2011-02-06
 #        copyright            : (C) 2011 by Charlie Sharpsteen
 #        email                : source@sharpsteen.net
 # ***************************************************************************/
-# 
+#
 #/***************************************************************************
 # *                                                                         *
 # *   This program is free software; you can redistribute it and/or modify  *
@@ -17,15 +17,15 @@
 # *                                                                         *
 # ***************************************************************************/
 
-# Makefile for a PyQGIS plugin 
+# Makefile for a PyQGIS plugin
 
 PLUGINNAME = ipython
 
 PY_FILES = ipython.py ipythondialog.py __init__.py
 
-EXTRAS = icon.png 
+EXTRAS = icon.png
 
-UI_FILES = ui_ipython.py
+UI_FILES = ui_console.py
 
 RESOURCE_FILES = resources.py
 

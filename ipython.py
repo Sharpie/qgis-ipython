@@ -22,10 +22,13 @@
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from qgis.core import *
+
 # Initialize Qt resources from file resources.py
 import resources
+
 # Import the code for the dialog
-from ipythondialog import ipythonDialog
+from console import IPythonConsole
+
 
 class ipython:
 
@@ -35,30 +38,24 @@ class ipython:
 
     def initGui(self):
         # Create action that will start plugin configuration
-        self.action = QAction(QIcon(":/plugins/ipython/python_logo.png"), \
+        self.show_console = QAction(QIcon(":/plugins/ipython/python_logo.png"),
             "IPython Console", self.iface.mainWindow())
         # connect the action to the run method
-        QObject.connect(self.action, SIGNAL("triggered()"), self.run)
+        QObject.connect(self.show_console, SIGNAL("triggered()"),
+                self.doConsole)
+
+        self.ipython_console = IPythonConsole()
 
         # Add toolbar button and menu item
-        self.iface.addToolBarIcon(self.action)
-        self.iface.pluginMenu().addAction(self.action)
+        self.iface.addToolBarIcon(self.show_console)
+        self.iface.pluginMenu().addAction(self.show_console)
 
     def unload(self):
         # Remove the plugin menu item and icon
-        self.iface.pluginMenu().removeAction(self.action)
-        self.iface.removeToolBarIcon(self.action)
+        self.iface.pluginMenu().removeAction(self.show_console)
+        self.iface.removeToolBarIcon(self.show_console)
 
     # run method that performs all the real work
-    def run(self):
-
-        # create and show the dialog
-        dlg = ipythonDialog()
-        # show the dialog
-        dlg.show()
-        result = dlg.exec_()
-        # See if OK was pressed
-        if result == 1:
-            # do something useful (delete the line containing pass and
-            # substitute with your code
-            pass
+    def doConsole(self):
+        self.ipython_console.show()
+        self.ipython_console.activateWindow()

@@ -25,6 +25,7 @@ from PyQt4.QtGui import *
 import code
 import sys
 import traceback
+import IPython.Shell
 
 from ui_console import Ui_IPython
 
@@ -48,7 +49,7 @@ class PythonEdit(QTextEdit, code.InteractiveInterpreter):
 
   def __init__(self,parent=None):
     QTextEdit.__init__(self, parent)
-    code.InteractiveInterpreter.__init__(self, locals=None)
+    self.shell = IPython.Shell.start()
 
     self.setTextInteractionFlags(Qt.TextEditorInteraction)
     self.setAcceptDrops(False)
@@ -64,7 +65,7 @@ class PythonEdit(QTextEdit, code.InteractiveInterpreter):
     self.insertInitText()
 
     for line in _init_commands:
-      self.runsource(line)
+      self.shell.IP.runsource(line)
 
     self.displayPrompt(False)
 
@@ -226,7 +227,7 @@ class PythonEdit(QTextEdit, code.InteractiveInterpreter):
 
     self.buffer.append(cmd)
     src = "\n".join(self.buffer)
-    more = self.runsource(src, "<input>")
+    more = self.shell.IP.runsource(src, "<input>")
     if not more:
       self.buffer = []
 

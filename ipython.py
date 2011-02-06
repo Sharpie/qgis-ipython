@@ -35,7 +35,7 @@ class ipython:
 
     def initGui(self):
         # Create action that will start plugin configuration
-        self.action = QAction(QIcon(":/plugins/ipython/icon.png"), \
+        self.action = QAction(QIcon(":/plugins/ipython/python_logo.png"), \
             "IPython Console", self.iface.mainWindow())
         # connect the action to the run method
         QObject.connect(self.action, SIGNAL("triggered()"), self.run)

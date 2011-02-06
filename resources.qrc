@@ -1,5 +1,5 @@
 <RCC>
     <qresource prefix="/plugins/ipython" >
-        <file>icon.png</file>
+        <file>python_logo.png</file>
     </qresource>
 </RCC>

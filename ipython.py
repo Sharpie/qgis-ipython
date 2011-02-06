@@ -42,11 +42,11 @@ class ipython:
 
         # Add toolbar button and menu item
         self.iface.addToolBarIcon(self.action)
-        self.iface.addPluginToMenu("&IPython Console", self.action)
+        self.iface.pluginMenu().addAction(self.action)
 
     def unload(self):
         # Remove the plugin menu item and icon
-        self.iface.removePluginMenu("&IPython Console",self.action)
+        self.iface.pluginMenu().removeAction(self.action)
         self.iface.removeToolBarIcon(self.action)
 
     # run method that performs all the real work

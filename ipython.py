@@ -44,7 +44,7 @@ class ipython:
         QObject.connect(self.show_console, SIGNAL("triggered()"),
                 self.doConsole)
 
-        self.ipython_console = IPythonConsole()
+        self.ipython_console = IPythonConsole(parent = self.iface.mainWindow())
 
         # Add toolbar button and menu item
         self.iface.addToolBarIcon(self.show_console)

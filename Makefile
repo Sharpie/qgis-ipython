@@ -25,7 +25,7 @@ PY_FILES = ipython.py ipythondialog.py __init__.py
 
 EXTRAS = icon.png
 
-UI_FILES = ui_console.py
+UI_FILES = 
 
 RESOURCE_FILES = resources.py
 

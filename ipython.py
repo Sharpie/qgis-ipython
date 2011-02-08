@@ -45,6 +45,8 @@ class ipython:
                 self.doConsole)
 
         self.ipython_console = IPythonConsole(parent = self.iface.mainWindow())
+        self.iface.mainWindow().addDockWidget(Qt.BottomDockWidgetArea,
+                self.ipython_console)
 
         # Add toolbar button and menu item
         self.iface.addToolBarIcon(self.show_console)

@@ -18,10 +18,6 @@
  *                                                                         *
  ***************************************************************************/
 """
-
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
-
 import sys
 import commands
 
@@ -29,17 +25,24 @@ import commands
 if not hasattr(sys, 'argv'):
     sys.argv = []
 
+from PyQt4.QtCore import Qt, QCoreApplication
+from PyQt4.QtGui import QDockWidget, QWidget, QVBoxLayout
+
 from IPython.frontend.qt.console.ipython_widget import IPythonWidget
 from IPython.frontend.qt.kernelmanager import QtKernelManager
 from IPython.utils.localinterfaces import LOCALHOST
 
-from ui_console import Ui_IPythonConsole
 
-
-class IPythonConsole(QDialog, Ui_IPythonConsole):
+class IPythonConsole(QDockWidget):
     def __init__(self, parent=None):
-        QDialog.__init__(self, parent)
-        self.setupUi(self)
+        QDockWidget.__init__(self, parent)
+        self.setObjectName("IPython Console")
+        self.setWindowTitle(QCoreApplication.translate("IPython Console",
+            "IPython Console"))
+        self.setAllowedAreas(Qt.BottomDockWidgetArea)
+
+        self.container = QWidget()
+        self.layout = QVBoxLayout(self.container)
 
         # This is here because QGIS defines sys.executable to be the QGIS app
         # and not a python interpreter---but only OS X.
@@ -56,5 +59,6 @@ class IPythonConsole(QDialog, Ui_IPythonConsole):
         self.console = IPythonWidget(local_kernel=LOCALHOST)
         self.console.kernel_manager = self.kernel_manager
 
-        self.verticalLayout.addWidget(self.console)
+        self.layout.addWidget(self.console)
+        self.setWidget(self.container)
 

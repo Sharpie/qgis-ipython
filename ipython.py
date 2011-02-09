@@ -33,6 +33,7 @@ class QGIS_IPython(object):
     def __init__(self, iface):
         # Save reference to the QGIS interface
         self.iface = iface
+        self.ipython_console = None
 
     def initGui(self):
         # Create action that will start plugin configuration
@@ -42,9 +43,6 @@ class QGIS_IPython(object):
         QObject.connect(self.show_console, SIGNAL("triggered()"),
                 self.load_console)
 
-        self.ipython_console = IPythonConsole(parent = self.iface.mainWindow())
-        self.iface.mainWindow().addDockWidget(Qt.BottomDockWidgetArea,
-                self.ipython_console)
 
         # Add toolbar button and menu item
         self.iface.addToolBarIcon(self.show_console)
@@ -56,6 +54,11 @@ class QGIS_IPython(object):
         self.iface.removeToolBarIcon(self.show_console)
 
     def load_console(self):
+        if self.ipython_console is None:
+            self.ipython_console = IPythonConsole(parent = self.iface.mainWindow())
+            self.iface.mainWindow().addDockWidget(Qt.BottomDockWidgetArea,
+                    self.ipython_console)
+
         self.ipython_console.show()
         self.ipython_console.activateWindow()
 

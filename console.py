@@ -19,7 +19,6 @@
  ***************************************************************************/
 """
 import sys
-import commands
 
 # IPython needs sys.argv to be defined
 if not hasattr(sys, 'argv'):
@@ -44,12 +43,12 @@ class IPythonConsole(QDockWidget):
         self.container = QWidget()
         self.layout = QVBoxLayout(self.container)
 
-        # This is here because QGIS defines sys.executable to be the QGIS app
-        # and not a python interpreter---but only OS X.
-        #
-        # FIXME: put some guards around this statement so it only gets executed
-        #        when absolutely needed.
-        sys.executable = commands.getoutput('which python')
+        if sys.platform == 'darwin':
+            import subprocess
+            # This is here because QGIS defines sys.executable to be the QGIS
+            # app on OS X and not a Python interpreter.
+            sys.executable = subprocess.check_output(
+                    ['which', 'python']).rstrip()
 
         self.kernel_manager = QtKernelManager()
 

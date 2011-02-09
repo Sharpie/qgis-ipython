@@ -18,10 +18,8 @@
  *                                                                         *
  ***************************************************************************/
 """
-# Import the PyQt and QGIS libraries
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
-from qgis.core import *
+from PyQt4.QtCore import Qt, QObject, SIGNAL
+from PyQt4.QtGui import QAction, QIcon
 
 # Initialize Qt resources from file resources.py
 import resources
@@ -30,7 +28,7 @@ import resources
 from console import IPythonConsole
 
 
-class ipython:
+class QGIS_IPython(object):
 
     def __init__(self, iface):
         # Save reference to the QGIS interface
@@ -38,11 +36,11 @@ class ipython:
 
     def initGui(self):
         # Create action that will start plugin configuration
-        self.show_console = QAction(QIcon(":/plugins/ipython/python_logo.png"),
+        self.show_console = QAction(QIcon(":/plugins/ipython_console/python_logo.png"),
             "IPython Console", self.iface.mainWindow())
         # connect the action to the run method
         QObject.connect(self.show_console, SIGNAL("triggered()"),
-                self.doConsole)
+                self.load_console)
 
         self.ipython_console = IPythonConsole(parent = self.iface.mainWindow())
         self.iface.mainWindow().addDockWidget(Qt.BottomDockWidgetArea,
@@ -57,7 +55,7 @@ class ipython:
         self.iface.pluginMenu().removeAction(self.show_console)
         self.iface.removeToolBarIcon(self.show_console)
 
-    # run method that performs all the real work
-    def doConsole(self):
+    def load_console(self):
         self.ipython_console.show()
         self.ipython_console.activateWindow()
+

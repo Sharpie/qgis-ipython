@@ -47,7 +47,8 @@ def pylab_kernel(gui):
     """Launch and return an IPython kernel with pylab support for the desired gui
     """
     kernel = IPKernelApp(hb_port = get_open_port())
-    kernel.initialize(['python', '--pylab=%s' % gui ])
+    kernel.initialize(['python', '--pylab=%s' % gui,
+        "--c='from qgis.core import *;import qgis.utils;'"])
     return kernel
 
 

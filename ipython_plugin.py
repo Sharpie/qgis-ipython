@@ -20,8 +20,8 @@
 """
 import sys
 
-from PyQt4.QtCore import Qt, QObject, SIGNAL
-from PyQt4.QtGui import QAction, QIcon, QMenu
+from PyQt4.QtCore import Qt, SIGNAL
+from PyQt4.QtGui import QAction, QIcon, QMessageBox
 
 from qgis.core import QgsApplication
 
@@ -30,7 +30,13 @@ if not hasattr(sys, 'argv'):
     sys.argv = QgsApplication.instance().argv()
 
 import resources # Initialize Qt resources from file resources.py
-from .ipython.internal_ipkernel import InternalIPKernel
+
+try:
+    import IPython, matplotlib, pygments
+    from .ipython.internal_ipkernel import InternalIPKernel
+    IPYTHON_LOADED = True
+except:
+    IPYTHON_LOADED = False
 
 
 class QGIS_IPython(object):
@@ -46,8 +52,10 @@ class QGIS_IPython(object):
             "External IPython Console", self.iface.mainWindow())
         self.launch_external_console.setToolTip(
             "IPython console running in an external process")
-        QObject.connect(self.launch_external_console, SIGNAL("triggered()"),
-                self.launch_console)
+        self.launch_external_console.connect(
+            self.launch_external_console,
+            SIGNAL("triggered()"),
+            self.launch_console)
 
 
         # Add toolbar menu item
@@ -66,6 +74,9 @@ class QGIS_IPython(object):
         self.kernel = kernel
 
     def unload(self):
+        if not IPYTHON_LOADED:
+            return
+
         # Remove the plugin menu item and icon.
         self.iface.pluginMenu().removeAction(self.launch_external_console)
         self.iface.removeToolBarIcon(self.launch_external_console)
@@ -75,6 +86,15 @@ class QGIS_IPython(object):
             self.kernel.cleanup_consoles()
 
     def launch_console(self):
+        # If IPython failed to load, bail out.
+        if not IPYTHON_LOADED:
+            QMessageBox.warning(
+                self.iface.mainWindow(),
+                'Error',
+                'Could not load IPython components. Please make sure IPython version 0.11 is installed along with the Pygments and Matplotlib modules.'
+                )
+            return
+
         if self.kernel is None:
             self.init_kernel()
 

@@ -18,11 +18,19 @@
  *                                                                         *
  ***************************************************************************/
 """
+import sys
+
 from PyQt4.QtCore import Qt, QObject, SIGNAL
 from PyQt4.QtGui import QAction, QIcon, QMenu
 
-# Initialize Qt resources from file resources.py
-import resources
+from qgis.core import QgsApplication
+
+# Most IPython modules require `sys.argv` to be defined.
+if not hasattr(sys, 'argv'):
+    sys.argv = QgsApplication.instance().argv()
+
+import resources # Initialize Qt resources from file resources.py
+from .ipython.internal_ipkernel import InternalIPKernel
 
 
 class QGIS_IPython(object):
@@ -30,24 +38,45 @@ class QGIS_IPython(object):
     def __init__(self, iface):
         # Save reference to the QGIS interface
         self.iface = iface
+        self.kernel = None
 
     def initGui(self):
         # Create action that will start plugin configuration
-        self.show_console = QAction(
+        self.launch_external_console = QAction(
             QIcon(":/plugins/ipython_console/logos/IPy_logo.png"),
             "IPython", self.iface.mainWindow())
         # connect the action to the run method
-        QObject.connect(self.show_console, SIGNAL("triggered()"),
-                self.load_console)
+        QObject.connect(self.launch_external_console, SIGNAL("triggered()"),
+                self.launch_console)
 
 
         # Add toolbar menu item
-        self.iface.pluginMenu().addAction(self.show_console)
+        self.iface.pluginMenu().addAction(self.launch_external_console)
+        self.iface.addToolBarIcon(self.launch_external_console)
+
+    def init_kernel(self):
+        kernel = InternalIPKernel()
+        kernel.app = QgsApplication.instance()
+
+        kernel.init_ipkernel('qt')
+        # Start the threads that make up the IPython kernel and integrate them
+        # with the Qt event loop.
+        kernel.ipkernel.start()
+
+        self.kernel = kernel
 
     def unload(self):
-        # Remove the plugin menu item and icon
-        self.iface.pluginMenu().removeAction(self.show_console)
+        # Remove the plugin menu item and icon.
+        self.iface.pluginMenu().removeAction(self.launch_external_console)
+        self.iface.removeToolBarIcon(self.launch_external_console)
 
-    def load_console(self):
-        return
+        if self.kernel is not None:
+            # Tear down any running consoles and then stop the kernel.
+            self.kernel.cleanup_consoles()
+
+    def launch_console(self):
+        if self.kernel is None:
+            self.init_kernel()
+
+        self.kernel.new_qt_console()
 

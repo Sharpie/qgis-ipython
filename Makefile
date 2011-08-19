@@ -19,7 +19,7 @@
 
 # Makefile for a PyQGIS plugin
 
-PLUGINNAME = ipython
+PLUGINNAME = ipython_console
 
 PY_FILES = ipython_plugin.py __init__.py ipython
 

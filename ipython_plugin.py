@@ -41,11 +41,11 @@ class QGIS_IPython(object):
         self.kernel = None
 
     def initGui(self):
-        # Create action that will start plugin configuration
         self.launch_external_console = QAction(
             QIcon(":/plugins/ipython_console/logos/launch_external_python.png"),
             "External IPython Console", self.iface.mainWindow())
-        # connect the action to the run method
+        self.launch_external_console.setToolTip(
+            "IPython console running in an external process")
         QObject.connect(self.launch_external_console, SIGNAL("triggered()"),
                 self.launch_console)
 

@@ -1,5 +1,6 @@
 <RCC>
-    <qresource prefix="/plugins/ipython_console" >
-        <file>python_logo.png</file>
+    <qresource prefix="/plugins/ipython_console">
+        <file>logos/IPy_logo.png</file>
+        <file>logos/python_logo.png</file>
     </qresource>
 </RCC>

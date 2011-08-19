@@ -21,11 +21,11 @@
 
 PLUGINNAME = ipython
 
-PY_FILES = ipython.py ipythondialog.py __init__.py
+PY_FILES = ipython_plugin.py __init__.py
 
-EXTRAS = icon.png
+EXTRAS = logos/IPy_logo.png
 
-UI_FILES = 
+UI_FILES =
 
 RESOURCE_FILES = resources.py
 
@@ -45,7 +45,7 @@ compile: $(UI_FILES) $(RESOURCE_FILES)
 deploy: compile
 	mkdir -p $(HOME)/.qgis/python/plugins/$(PLUGINNAME)
 	cp -vf $(PY_FILES) $(HOME)/.qgis/python/plugins/$(PLUGINNAME)
-	cp -vf $(UI_FILES) $(HOME)/.qgis/python/plugins/$(PLUGINNAME)
+#	cp -vf $(UI_FILES) $(HOME)/.qgis/python/plugins/$(PLUGINNAME)
 	cp -vf $(RESOURCE_FILES) $(HOME)/.qgis/python/plugins/$(PLUGINNAME)
 	cp -vf $(EXTRAS) $(HOME)/.qgis/python/plugins/$(PLUGINNAME)
 

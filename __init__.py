@@ -24,12 +24,12 @@ def name():
 def description():
     return "An enhanced QGIS console powered by IPython"
 def version():
-    return "Version 0.1.1"
+    return "Version 0.2"
 def icon():
-    return "python_logo.png"
+    return "IPy_logo.png"
 def qgisMinimumVersion():
-    return "1.6"
+    return "1.7"
 def classFactory(iface):
     # load ipython class from file ipython
-    from ipython import QGIS_IPython
+    from ipython_plugin import QGIS_IPython
     return QGIS_IPython(iface)

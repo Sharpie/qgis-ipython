@@ -10,87 +10,72 @@
  ***************************************************************************/
 
 This code is a modified vesion of an IPython example created by Fernando Perez
-for the development version of IPython v0.12:
+for IPython v0.12:
 
-  https://github.com/ipython/ipython/blob/4e1a76c/docs/examples/lib/internal_ipkernel.py
-
-The code has been modified slightly to achieve compatiblity with IPython v0.11.
+  https://github.com/ipython/ipython/blob/rel-0.12/docs/examples/lib/internal_ipkernel.py
 """
 #-----------------------------------------------------------------------------
 # Imports
 #-----------------------------------------------------------------------------
 
 import subprocess
-import sys
+import os
 
 from IPython.zmq.ipkernel import IPKernelApp
 
 #-----------------------------------------------------------------------------
 # Functions and classes
 #-----------------------------------------------------------------------------
-def get_open_port():
-    """Return a random open port
-    This function is needed to make the internal kernel work with IPython v0.11.
+def loop_qgis(kernel):
+    """QGIS event loop for IPython kernels.
 
-    Starting with v0.12, a random port is chosen for the heartbeat socket when
-    IPKernelApp is created.
+    Based on loop_qt in IPython.zmq.eventloops, but uses the special QGIS main
+    application instance and avoids trying to launch a new instance. Using
+    loop_qt will cause starting the kernel to hang QGIS with IPython 0.12 or
+    later.
     """
-    import socket
-    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    s.bind(("",0))
-    s.listen(1)
-    port = s.getsockname()[1]
-    s.close()
-    return port
+    from qgis.core import QgsApplication
+    from PyQt4 import QtCore
 
-def pylab_kernel(gui):
-    """Launch and return an IPython kernel with pylab support for the desired gui
-    """
-    kernel = IPKernelApp(hb_port = get_open_port())
-    kernel.initialize(['python', '--pylab=%s' % gui,
-        "--c='from qgis.core import *;import qgis.utils;'"])
-    return kernel
-
-
-def qtconsole_cmd(kernel):
-    """Compute the command to connect a qt console to an already running kernel
-    """
-    ports = ['--%s=%d' % (name, port) for name, port in kernel.ports.items()]
-    return ['ipython', 'qtconsole', '--existing'] + ports
+    kernel.app = QgsApplication.instance()
+    kernel.timer = QtCore.QTimer()
+    kernel.timer.timeout.connect(kernel.do_one_iteration)
+    # Units for the timer are in milliseconds
+    kernel.timer.start(1000*kernel._poll_interval)
 
 
 class InternalIPKernel(object):
+    """Class for managing an IPython kernel inside of QGIS.
 
-    def init_ipkernel(self, backend):
-        # Start IPython kernel with GUI event loop and pylab support
-        self.ipkernel = pylab_kernel(backend)
+    IPython normally runs kernels in seperate processes, but this setup is
+    limiting in the case of QGIS because external kernels cannot access the
+    data and variables that QGIS is working with. This class manages an
+    in-process kernel and is capable of launching external consoles that can
+    attach to the kernel.
+
+    IPython Consoles are run as external processes because they rely on
+    Version 2 of the PyQt api and QGIS is using Version 1 which is
+    incompatible.
+    """
+    def __init__(self):
+        # Start IPython kernel with QGIS event loop integration and pylab
+        # support
+        self.ipkernel = IPKernelApp()
+        self.ipkernel.initialize(['python', '--pylab=qt',
+            # Ensure the Kernel pre-loads the same modules as the QGIS python
+            # console.
+            "--c='from qgis.core import *;import qgis.utils;'"])
+        # Ensure we use an event loop that is QGIS-friendly.
+        self.ipkernel.kernel.eventloop = loop_qgis
+        self.ipkernel.start()
+
         # To create and track active qt consoles
-        self._qtconsole_cmd = qtconsole_cmd(self.ipkernel)
+        self._qtconsole_cmd = ['ipython', 'qtconsole', '--existing'] + \
+                [os.path.basename(self.ipkernel.connection_file)]
         self.consoles = []
-
-        # This application will also act on the shell user namespace
-        self.namespace = self.ipkernel.shell.user_ns
-        # Keys present at startup so we don't print the entire pylab/numpy
-        # namespace when the user clicks the 'namespace' button
-        self._init_keys = set(self.namespace.keys())
-
-        # Example: a variable that will be seen by the user in the shell, and
-        # that the GUI modifies (the 'Counter++' button increments it):
-        self.namespace['app_counter'] = 0
-        #self.namespace['ipkernel'] = self.ipkernel  # dbg
-
-    def print_namespace(self, evt=None):
-        print "\n***Variables in User namespace***"
-        for k, v in self.namespace.iteritems():
-            if k not in self._init_keys and not k.startswith('_'):
-                print '%s -> %r' % (k, v)
-        sys.stdout.flush()
 
     def new_qt_console(self, evt=None):
         self.consoles.append(subprocess.Popen(self._qtconsole_cmd))
-
-    def count(self, evt=None):
-        self.namespace['app_counter'] += 1
 
     def cleanup_consoles(self, evt=None):
         for c in self.consoles:

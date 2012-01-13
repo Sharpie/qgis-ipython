@@ -63,15 +63,7 @@ class QGIS_IPython(object):
         self.iface.addToolBarIcon(self.launch_external_console)
 
     def init_kernel(self):
-        kernel = InternalIPKernel()
-        kernel.app = QgsApplication.instance()
-
-        kernel.init_ipkernel('qt')
-        # Start the threads that make up the IPython kernel and integrate them
-        # with the Qt event loop.
-        kernel.ipkernel.start()
-
-        self.kernel = kernel
+        self.kernel = InternalIPKernel()
 
     def unload(self):
         if not IPYTHON_LOADED:

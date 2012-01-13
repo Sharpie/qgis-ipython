@@ -21,14 +21,24 @@
 """
 def name():
     return "IPython Console"
+
 def description():
     return "An enhanced QGIS console powered by IPython"
+
+def authorName():
+	return "Charlie Sharpsteen"
+
 def version():
-    return "Version 0.2"
-def icon():
-    return "icons/IPythonConsole.png"
+    return "Version 0.3"
+
+def experimental():
+  return True
+
 def qgisMinimumVersion():
     return "1.7"
+
+def icon():
+    return "icons/IPythonConsole.png"
 def classFactory(iface):
     # load ipython class from file ipython
     from ipython_plugin import QGIS_IPython

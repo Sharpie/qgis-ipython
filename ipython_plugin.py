@@ -55,7 +55,7 @@ class QGIS_IPython(object):
 
     def initGui(self):
         self.launch_external_console = QAction(
-            QIcon(":/plugins/ipython_console/logos/launch_external_python.png"),
+            QIcon(":/plugins/ipython_console/icons/launch_external_python.png"),
             "External IPython Console", self.iface.mainWindow())
         self.launch_external_console.setToolTip(
             "IPython console running in an external process")

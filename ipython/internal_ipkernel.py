@@ -58,12 +58,10 @@ class InternalIPKernel(object):
     incompatible.
     """
     def __init__(self):
-        # Start IPython kernel with QGIS event loop integration and pylab
-        # support
         self.ipkernel = IPKernelApp()
-        self.ipkernel.initialize(['python', '--pylab=qt',
-            # Ensure the Kernel pre-loads the same modules as the QGIS python
-            # console.
+        self.ipkernel.initialize(['python',
+            # Ensure the Kernel pre-loads the same modules as are available
+            # from the QGIS python console.
             "--c='from qgis.core import *;import qgis.utils;'"])
         # Ensure we use an event loop that is QGIS-friendly.
         self.ipkernel.kernel.eventloop = loop_qgis

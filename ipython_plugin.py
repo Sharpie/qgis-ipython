@@ -35,7 +35,7 @@ try:
     from distutils.version import LooseVersion as V
     REQUIRED_IPYTHON_VERSION = V('0.12')
 
-    import IPython, matplotlib, pygments
+    import IPython, pygments
 
     if REQUIRED_IPYTHON_VERSION > V(IPython.__version__):
         raise ImportError
@@ -90,7 +90,7 @@ class QGIS_IPython(object):
             QMessageBox.warning(
                 self.iface.mainWindow(),
                 'Error',
-                'Could not load IPython components. Please make sure IPython version 0.12 or newer is installed along with the Pygments and Matplotlib modules.'
+                'Could not load IPython components. Please make sure IPython version 0.12 or newer is installed along with the Pygments module.'
                 )
             return
 

@@ -32,7 +32,14 @@ if not hasattr(sys, 'argv'):
 import resources # Initialize Qt resources from file resources.py
 
 try:
+    from distutils.version import LooseVersion as V
+    REQUIRED_IPYTHON_VERSION = V('0.12')
+
     import IPython, matplotlib, pygments
+
+    if REQUIRED_IPYTHON_VERSION > V(IPython.__version__):
+        raise ImportError
+
     from .ipython.internal_ipkernel import InternalIPKernel
     IPYTHON_LOADED = True
 except:
@@ -83,7 +90,7 @@ class QGIS_IPython(object):
             QMessageBox.warning(
                 self.iface.mainWindow(),
                 'Error',
-                'Could not load IPython components. Please make sure IPython version 0.11 is installed along with the Pygments and Matplotlib modules.'
+                'Could not load IPython components. Please make sure IPython version 0.12 or newer is installed along with the Pygments and Matplotlib modules.'
                 )
             return
 

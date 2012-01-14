@@ -1,5 +1,23 @@
 ---
 
+# Changes in version 0.3 (2012-01-13)
+
+---
+
+## Major Changes
+
+  - IPython 0.12 or newer is now required. Dropped Matplotlib dependency.
+
+## Bug Fixes
+
+  - Better integration with the QGIS event loop.
+
+  - Improperly closing external consoles will no longer hose the entire QGIS
+    application.
+
+
+---
+
 # Changes in version 0.2 (2011-08-19)
 
 ---

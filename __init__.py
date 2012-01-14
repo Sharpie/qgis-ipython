@@ -29,7 +29,7 @@ def authorName():
 	return "Charlie Sharpsteen"
 
 def version():
-    return "Version 0.3"
+    return "0.4"
 
 def experimental():
   return True

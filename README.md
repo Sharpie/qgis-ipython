@@ -1,6 +1,8 @@
 QGIS IPython Console
 ====================
 
+**NOTE: This project is no longer under active development.**
+
 This plugin embeds the [IPython][1] interpreter inside of QGIS and provides
 functionality for spawning consoles that are connected to this interpreter.
 IPython offers several advantages over the standard QGIS Python console that
@@ -24,14 +26,6 @@ Version numbers for this plugin are assigned according to the principles of
   [1]: http://ipython.org
   [2]: http://ipython.org/ipython-doc/stable/overview.html
   [3]: http://semver.org
-
-
-Reporting Bugs
---------------
-
-Please submit issue reports and feature suggestions to:
-
-  https://github.com/Sharpie/qgis-ipython/issues
 
 
 Latest Changes

@@ -1,7 +1,11 @@
 QGIS IPython Console
 ====================
 
-**NOTE: This project is no longer under active development.**
+**NOTE: This project is no longer under active development and has fallen
+behind the current versions of both QGIS and IPython. If there is code
+here you would like to use, feel free to fork the plugin or copy the
+pieces you want. Attribution requirements are waived as long as copied
+code remains under the same license as QGIS its self.**
 
 This plugin embeds the [IPython][1] interpreter inside of QGIS and provides
 functionality for spawning consoles that are connected to this interpreter.
